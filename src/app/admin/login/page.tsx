@@ -1,18 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Loader2, Lock } from 'lucide-react'
+import { useState } from 'react'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -21,96 +15,131 @@ export default function AdminLoginPage() {
     }
     setLoading(true)
     setError('')
+
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
+
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Login failed')
-      window.location.replace('/admin/dashboard')
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Login failed')
+      }
+
+      // Success — hard navigate to portal
+      window.location.href = '/admin/portal'
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
       setLoading(false)
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleLogin()
-  }
-
-  if (!mounted) return null
-
   return (
-    <div className="min-h-screen bg-earth-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🧀</div>
-          <h1 className="font-serif text-2xl text-earth-900">The Cheese Shop</h1>
-          <p className="text-earth-500 text-sm mt-1">Admin login</p>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#f5f2eb',
+      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+    }}>
+      <div style={{ width: '100%', maxWidth: '380px' }}>
+
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <div style={{ fontSize: '52px', marginBottom: '10px' }}>🧀</div>
+          <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#1a0f00', margin: '0 0 4px' }}>
+            The Cheese Shop
+          </h1>
+          <p style={{ fontSize: '14px', color: '#9e7a4a', margin: 0 }}>Admin login</p>
         </div>
 
-        <div className="card p-8">
-          <div className="space-y-4" data-form-type="other">
-            <div>
-              <label className="block text-sm font-medium text-earth-700 mb-1.5">
-                Email address
-              </label>
-              <input
-                type="text"
-                inputMode="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="admin@yourshop.com"
-                autoComplete="off"
-                data-1p-ignore="true"
-                data-lpignore="true"
-                data-form-type="other"
-                className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-earth-700 mb-1.5">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="••••••••"
-                autoComplete="off"
-                data-1p-ignore="true"
-                data-lpignore="true"
-                data-form-type="other"
-                className="input-field"
-              />
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-                {error}
-              </div>
-            )}
-
-            <button
-              onClick={handleLogin}
-              disabled={loading}
-              className="btn-primary w-full py-3"
-            >
-              {loading ? (
-                <><Loader2 size={18} className="animate-spin" /> Signing in...</>
-              ) : (
-                <><Lock size={18} /> Sign in</>
-              )}
-            </button>
+        <div style={{
+          background: '#fff',
+          borderRadius: '16px',
+          border: '1px solid #e8dcc8',
+          padding: '32px',
+        }}>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#5c3d00', marginBottom: '6px' }}>
+              Email address
+            </label>
+            <input
+              type="text"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleLogin() }}
+              placeholder="admin@yourshop.com"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #d4b896',
+                borderRadius: '8px',
+                fontSize: '14px',
+                outline: 'none',
+                boxSizing: 'border-box' as const,
+              }}
+            />
           </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#5c3d00', marginBottom: '6px' }}>
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleLogin() }}
+              placeholder="••••••••"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #d4b896',
+                borderRadius: '8px',
+                fontSize: '14px',
+                outline: 'none',
+                boxSizing: 'border-box' as const,
+              }}
+            />
+          </div>
+
+          {error && (
+            <div style={{
+              background: '#fee2e2',
+              color: '#991b1b',
+              padding: '10px 14px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              marginBottom: '16px',
+            }}>
+              {error}
+            </div>
+          )}
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: loading ? '#ccc' : '#c45e08',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {loading ? 'Signing in...' : 'Sign in'}
+          </button>
         </div>
 
-        <p className="text-center text-xs text-earth-400 mt-6">
+        <p style={{ textAlign: 'center', fontSize: '12px', color: '#c0a070', marginTop: '16px' }}>
           Secure admin area
         </p>
       </div>
