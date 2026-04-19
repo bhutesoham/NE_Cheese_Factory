@@ -31,8 +31,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install  
+          npm ci  
           npm install --save-dev jest @types/jest ts-jest jest-environment-node
+
+      - name: Audit check
+        run: npm audit --audit-level=critical
+        continue-on-error: true # warns but doesn't block
 
       - name: Run test
         run: npm test
