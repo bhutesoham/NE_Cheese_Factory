@@ -30,7 +30,9 @@ jobs:
           node-js-version: ${{ matrix.node-js-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install  
+          npm install --save-dev jest @types/jest ts-jest jest-environment-node
 
       - name: Run test
         run: npm test
