@@ -1,0 +1,36 @@
+name: Build & Test
+
+on:
+  workflow_call:
+    inputs:
+      run_tests:
+        type: boolean
+        default: true
+
+    outputs:
+      test_result:
+        value: ${{ jobs.build-test.outputs.test_result }}
+
+jobs:
+  build-test:
+    outputs:
+      test_result: ${{ steps.check_result.outputs.result }}
+    strategy:
+      matrix:
+        node-js-version: [18.x, 20.x, 22.x]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Code
+        uses: actions/checkout@v4
+
+      - name: Setup language run time
+        uses: actions/setup-node@v4
+        with:
+          python-version: ${{ matrix.node-js-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run test
+        run: npm test

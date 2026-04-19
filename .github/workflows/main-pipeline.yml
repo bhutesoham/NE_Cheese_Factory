@@ -1,0 +1,19 @@
+name: Main-pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.sha.outputs.short }}
+    steps:
+      - name: Set short SHA
+        id: sha
+        run: echo "short=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+  call-build-test:
+    needs: [prepare]
+    uses: ./.github/workflows/reusable-build-test.yml
