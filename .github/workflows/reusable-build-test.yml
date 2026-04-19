@@ -27,7 +27,7 @@ jobs:
       - name: Setup language run time
         uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.node-js-version }}
+          node-js-version: ${{ matrix.node-js-version }}
 
       - name: Install dependencies
         run: npm install
