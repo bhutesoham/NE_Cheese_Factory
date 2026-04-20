@@ -13,6 +13,7 @@ on:
 
       outputs:
         image_url:
+          description: "The full ECR image URL with Tag"
           value: ${{ jobs.docker-build-push.outputs.image_url }}
 
 jobs:
