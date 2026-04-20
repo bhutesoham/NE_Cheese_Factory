@@ -1,0 +1,56 @@
+name: Docker build & push
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+
+      tag:
+        type: string
+        required: true
+
+      outputs:
+        image_url:
+          value: ${{ jobs.docker-build-push.outputs.image_url }}
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_TAG: ${{ inputs.tag }}
+      ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      IMAGE_NAME: ${{ inputs.image_name }}
+
+    outputs:
+      image_url: ${{ steps.set_url.outputs.image_url }}
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+          docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+
+      - name: Build and tag image
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }} .
+
+      - name: Push image to ECR
+        run: |
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+
+      - name: Output image URL
+        id: set_url
+        run: |
+          echo "image_url=${{ env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}" >> $GITHUB_OUTPUT

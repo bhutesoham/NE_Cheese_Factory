@@ -17,3 +17,11 @@ jobs:
   call-build-test:
     needs: [prepare]
     uses: ./.github/workflows/reusable-build-test.yml
+
+  call-docker:
+    needs: [call-build-test, prepare]
+    uses: ./.github/workflows/reusable-docker.yml
+    with:
+      image_name: cheese-shop-app
+      tag: "latest"
+    secrets: inherit

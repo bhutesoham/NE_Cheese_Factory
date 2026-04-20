@@ -39,3 +39,9 @@ next-env.d.ts
 #terraform
 infrastructure/
 .terraform/
+.terraform.lock.hcl   # optional, some teams do commit this
+*.tfstate
+*.tfstate.backup
+*.tfvars              # if they contain secrets
+crash.log
+override.tf
