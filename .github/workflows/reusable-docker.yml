@@ -11,11 +11,10 @@ on:
         type: string
         required: true
 
-      outputs:
-        image_url:
-          description: "The full ECR image URL with Tag"
-          value: ${{ jobs.docker-build-push.outputs.image_url }}
-
+    outputs:
+      image_url:
+        description: "The full ECR image URL with tag"
+        value: ${{ jobs.docker-build-push.outputs.image_url }}
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
