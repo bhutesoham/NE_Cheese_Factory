@@ -20,8 +20,11 @@ RUN ls -d public/ && npm run build
 # ── Stage 3: production runner ────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
-RUN mkdir -p /app/public && chown -R node:alphine /app/public
+
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+RUN mkdir -p /app/public && hown -R appuser:appgroup /app/public
+
 
 # Copy only what Next.js needs to run
 COPY --from=builder /app/public ./public
