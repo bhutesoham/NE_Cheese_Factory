@@ -23,7 +23,7 @@ WORKDIR /app
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-RUN mkdir -p /app/public && hown -R appuser:appgroup /app/public
+RUN mkdir -p /app/public && chown -R appuser:appgroup /app/public
 
 
 # Copy only what Next.js needs to run
