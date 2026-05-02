@@ -25,7 +25,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 RUN mkdir -p /app/public && chown -R appuser:appgroup /app/public
 RUN npm install -g prisma
-RUN touch .env.local && chown nextjs:nodejs .env.local
+RUN touch .env.local && chown appuser:appgroup .env.local
 
 
 # Copy only what Next.js needs to run
