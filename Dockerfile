@@ -24,7 +24,7 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 RUN mkdir -p /app/public && chown -R appuser:appgroup /app/public
-
+RUN npm install -g prisma
 
 # Copy only what Next.js needs to run
 COPY --from=builder /app/public ./public
