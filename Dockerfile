@@ -20,8 +20,7 @@ RUN ls -d public/ && npm run build
 # ── Stage 3: production runner ────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
-COPY sql ./sql
-COPY scripts ./scripts
+
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
@@ -36,7 +35,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/scripts ./scripts
-
+COPY sql ./sql
+COPY scripts ./scripts
 
 
 USER appuser
