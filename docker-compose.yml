@@ -9,6 +9,7 @@ services:
     #   - .env
     environment:
       DATABASE_URL: "postgresql://postgres:Stuttgart11%23@db:5432/kaaswinkel"
+    command: sh -c "node scripts/migrate.js && node scripts/seed.js"
     depends_on:
       db:
         condition: service_healthy

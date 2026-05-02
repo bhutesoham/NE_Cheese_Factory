@@ -20,10 +20,13 @@ RUN ls -d public/ && npm run build
 # ── Stage 3: production runner ────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
+COPY sql ./sql
+COPY scripts ./scripts
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 RUN mkdir -p /app/public && chown -R appuser:appgroup /app/public
+
 RUN npm install dotenv pg
 RUN touch .env.local && chown appuser:appgroup .env.local
 
