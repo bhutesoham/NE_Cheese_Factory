@@ -26,7 +26,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 RUN mkdir -p /app/public && chown -R appuser:appgroup /app/public
 
-RUN npm install dotenv pg
+RUN npm install dotenv pg bcryptjs
 # RUN touch .env.local && chown appuser:appgroup .env.local
 
 
