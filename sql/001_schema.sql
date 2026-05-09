@@ -106,6 +106,11 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- Drop triggers if they exist before recreating
+DROP TRIGGER IF EXISTS update_products_updated_at ON products;
+DROP TRIGGER IF EXISTS update_orders_updated_at ON orders;
+DROP TRIGGER IF EXISTS update_admin_users_updated_at ON admin_users;
+
 CREATE TRIGGER update_products_updated_at
   BEFORE UPDATE ON products
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
