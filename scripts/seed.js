@@ -3,31 +3,30 @@
 const path = require("path");
 const fs = require("fs");
 
+// Load .env.local if present (local dev), otherwise use ECS injected env vars
 const envPath = path.resolve(__dirname, "..", ".env.local");
 if (fs.existsSync(envPath)) {
+  console.log("✅ Found .env.local at:", envPath);
   require("dotenv").config({ path: envPath });
 } else {
-  console.error("❌ .env.local NOT FOUND at:", envPath);
-  console.error("Create it in the project root with your DATABASE_URL.\n");
   console.log("ℹ️ No .env.local found, using environment variables from ECS");
 }
 
-const DB_URL = process.env.DATABASE_URL;
+// Build connection from individual params (avoids special char encoding issues in URLs)
+const DB_HOST = process.env.DB_HOST;
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_NAME = process.env.DB_NAME || "kaaswinkel";
+const DB_PORT = process.env.DB_PORT || 5432;
 
-// 🔍 Debug: log what ECS is actually injecting
-try {
-  const parsed = new URL(DB_URL);
-  console.log("🔍 DATABASE_URL host:", parsed.hostname);
-  console.log("🔍 DATABASE_URL user:", parsed.username);
-  console.log("🔍 DATABASE_URL password:", parsed.password);
-} catch {
-  console.error("🔍 DATABASE_URL is invalid or undefined:", DB_URL);
-}
+console.log("🔍 DB_HOST:", DB_HOST);
+console.log("🔍 DB_USER:", DB_USER);
+console.log("🔍 DB_NAME:", DB_NAME);
 
-if (!DB_URL || DB_URL.includes("username:password")) {
-  console.error("\n❌ DATABASE_URL is not set correctly in .env.local");
+if (!DB_HOST || !DB_USER || !DB_PASSWORD) {
+  console.error("\n❌ DB_HOST, DB_USER or DB_PASSWORD is missing.");
   console.error(
-    "Example: DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/kaaswinkel\n",
+    "Make sure these are set in .env.local or injected by ECS secrets.\n",
   );
   process.exit(1);
 }
@@ -35,7 +34,14 @@ if (!DB_URL || DB_URL.includes("username:password")) {
 const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
 
-const pool = new Pool({ connectionString: DB_URL });
+const pool = new Pool({
+  host: DB_HOST,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  port: DB_PORT,
+  ssl: { rejectUnauthorized: false },
+});
 
 async function seed() {
   const client = await pool.connect();
