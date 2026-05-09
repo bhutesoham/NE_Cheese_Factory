@@ -10,10 +10,20 @@ if (fs.existsSync(envPath)) {
   console.error("❌ .env.local NOT FOUND at:", envPath);
   console.error("Create it in the project root with your DATABASE_URL.\n");
   console.log("ℹ️ No .env.local found, using environment variables from ECS");
-  //process.exit(1)
 }
 
 const DB_URL = process.env.DATABASE_URL;
+
+// 🔍 Debug: log what ECS is actually injecting
+try {
+  const parsed = new URL(DB_URL);
+  console.log("🔍 DATABASE_URL host:", parsed.hostname);
+  console.log("🔍 DATABASE_URL user:", parsed.username);
+  console.log("🔍 DATABASE_URL password:", parsed.password);
+} catch {
+  console.error("🔍 DATABASE_URL is invalid or undefined:", DB_URL);
+}
+
 if (!DB_URL || DB_URL.includes("username:password")) {
   console.error("\n❌ DATABASE_URL is not set correctly in .env.local");
   console.error(

@@ -22,10 +22,19 @@ if (fs.existsSync(envPath)) {
     "  DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/kaaswinkel\n",
   );
   console.log("ℹ️ No .env.local found, using environment variables from ECS");
-  //process.exit(1)
 }
 
 const DB_URL = process.env.DATABASE_URL;
+
+// 🔍 Debug: log what ECS is actually injecting
+try {
+  const parsed = new URL(DB_URL);
+  console.log("🔍 DATABASE_URL host:", parsed.hostname);
+  console.log("🔍 DATABASE_URL user:", parsed.username);
+  console.log("🔍 DATABASE_URL password:", parsed.password);
+} catch {
+  console.error("🔍 DATABASE_URL is invalid or undefined:", DB_URL);
+}
 
 if (!DB_URL || DB_URL.includes("username:password")) {
   console.error(
