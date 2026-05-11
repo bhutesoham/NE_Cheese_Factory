@@ -58,7 +58,7 @@ jobs:
         if: always()
         uses: aquasecurity/trivy-action@master
         with:
-          image_ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+          image-ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
           format: "sarif"
           output: "trivy-results.sarif"
 

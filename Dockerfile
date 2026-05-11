@@ -1,5 +1,5 @@
 # Stage 1 (Builder) -> Shared foundation 
-FROM node:20-alpine AS deps
+FROM node:22-alpine3.23 AS deps
 
 # Set WORKDIR
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 #---- Build the Next.js app------
-FROM node:20-alpine AS builder
+FROM node:22-alpine3.23 AS builder
 WORKDIR /app
 RUN mkdir -p public
 
@@ -18,7 +18,7 @@ COPY . .
 RUN ls -d public/ && npm run build
 
 # ── Stage 3: production runner ────────────────────────────────────
-FROM node:20-alpine AS runner
+FROM node:22-alpine3.23 AS runner
 WORKDIR /app
 
 
