@@ -16,13 +16,13 @@ on:
         description: "The full ECR image URL with tag"
         value: ${{ jobs.docker-build-push.outputs.image_url }}
 
-  permissions:
-    contents: read
-    security-events: write
-    actions: read # needed for CodeQL telemetry
-
 jobs:
   docker-build-push:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read # needed for CodeQL telemetry
+
     runs-on: ubuntu-latest
 
     env:
@@ -73,7 +73,6 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: "trivy-results.sarif"
-          retention-days: 10
 
       - name: Push image to ECR
         run: |
