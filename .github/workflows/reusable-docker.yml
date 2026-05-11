@@ -49,10 +49,10 @@ jobs:
       - name: Scan the image for vulnurabilities
         uses: aquasecurity/trivy-action@master
         with:
-          image_ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+          image-ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
           severity: "CRITICAL,HIGH"
           exit-code: 1
-          trivyignore: ${{ github.workspace }}/.trivyignore
+          #trivyignore: ${{ github.workspace }}/.trivyignore
 
       - name: Save the trivy report as file
         if: always()
