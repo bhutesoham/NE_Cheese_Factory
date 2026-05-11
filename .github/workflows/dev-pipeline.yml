@@ -3,6 +3,8 @@ name: dev-pipeline
 on:
   push:
     branches: [main]
+env:
+  ENVIRONMENT: dev
 
 jobs:
   prepare:
@@ -19,8 +21,6 @@ jobs:
     uses: ./.github/workflows/reusable-build-test.yml
 
   call-docker:
-    env:
-      ENVIRONMENT: dev
     permissions:
       contents: read
       security-events: write
