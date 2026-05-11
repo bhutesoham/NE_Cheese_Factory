@@ -46,6 +46,29 @@ jobs:
         run: |
           docker build -t ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }} .
 
+      - name: Scan the image for vulnurabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image_ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+          severity: "CRITICAL,HIGH"
+          exit-code: 1
+          trivyignore: ${{ github.workspace }}/.trivyignore
+
+      - name: Save the trivy report as file
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image_ref: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+
+      - name: upload the trivy report as artifact to github security
+        if: always()
+        uses: actions/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-results.sarif"
+          retention-days: 10
+
       - name: Push image to ECR
         run: |
           docker push ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
