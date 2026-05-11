@@ -1,16 +1,13 @@
 name: staging-pipeline
 
 on:
-  pull_requests:
+  pull_request:
     branches: [main, dev]
-
-env:
-  ENVIRONMENT: staging
+    types: [opened, synchronize, reopened]
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     outputs:
       short_sha: ${{ steps.sha.outputs.short }}
     steps:
