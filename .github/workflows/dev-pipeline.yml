@@ -3,8 +3,6 @@ name: dev-pipeline
 on:
   push:
     branches: [main]
-env:
-  ENVIRONMENT: dev
 
 jobs:
   prepare:
@@ -29,5 +27,6 @@ jobs:
     uses: ./.github/workflows/reusable-docker.yml
     with:
       image_name: cheese-shop-app
+      environment: dev
       tag: "latest"
     secrets: inherit

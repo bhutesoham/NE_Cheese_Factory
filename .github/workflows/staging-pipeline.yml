@@ -30,5 +30,6 @@ jobs:
     uses: ./.github/workflows/reusable-docker.yml
     with:
       image_name: cheese-shop-app
+      environment: staging
       tag: "latest"
     secrets: inherit
