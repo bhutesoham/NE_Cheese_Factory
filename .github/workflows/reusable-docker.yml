@@ -18,11 +18,6 @@ on:
 
 jobs:
   docker-build-push:
-    permissions:
-      contents: read
-      security-events: write
-      actions: read # needed for CodeQL telemetry
-
     runs-on: ubuntu-latest
 
     env:

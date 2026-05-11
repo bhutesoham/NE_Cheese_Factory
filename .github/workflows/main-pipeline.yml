@@ -19,6 +19,10 @@ jobs:
     uses: ./.github/workflows/reusable-build-test.yml
 
   call-docker:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read # needed for CodeQL telemetry
     needs: [call-build-test, prepare]
     uses: ./.github/workflows/reusable-docker.yml
     with:
