@@ -15,6 +15,12 @@ on:
       image_url:
         description: "The full ECR image URL with tag"
         value: ${{ jobs.docker-build-push.outputs.image_url }}
+
+  permissions:
+    contents: read
+    security-events: write
+    actions: read # needed for CodeQL telemetry
+
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
@@ -64,7 +70,7 @@ jobs:
 
       - name: upload the trivy report as artifact to github security
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: "trivy-results.sarif"
           retention-days: 10
