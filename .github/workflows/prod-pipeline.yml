@@ -1,0 +1,33 @@
+name: prod-pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.sha.outputs.short }}
+    steps:
+      - name: Set short SHA
+        id: sha
+        run: echo "short=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+  call-build-test:
+    needs: [prepare]
+    uses: ./.github/workflows/reusable-build-test.yml
+
+  call-docker:
+    env:
+      ENVIRONMENT: prod
+    permissions:
+      contents: read
+      security-events: write
+      actions: read # needed for CodeQL telemetry
+    needs: [call-build-test, prepare]
+    uses: ./.github/workflows/reusable-docker.yml
+    with:
+      image_name: cheese-shop-app
+      tag: "latest"
+    secrets: inherit
