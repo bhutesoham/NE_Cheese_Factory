@@ -21,7 +21,7 @@ on:
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
     env:
       DOCKER_TAG: ${{ inputs.tag }}
       ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
