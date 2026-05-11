@@ -64,7 +64,7 @@ jobs:
 
       - name: upload the trivy report as artifact to github security
         if: always()
-        uses: actions/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
           retention-days: 10
