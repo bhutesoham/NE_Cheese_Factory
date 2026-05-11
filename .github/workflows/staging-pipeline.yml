@@ -10,6 +10,7 @@ env:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     outputs:
       short_sha: ${{ steps.sha.outputs.short }}
     steps:
