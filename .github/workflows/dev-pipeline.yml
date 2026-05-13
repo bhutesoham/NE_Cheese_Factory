@@ -7,7 +7,6 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-
     outputs:
       short_sha: ${{ steps.sha.outputs.short }}
     steps:
@@ -23,6 +22,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      id-token: write
       actions: read # needed for CodeQL telemetry
     needs: [call-build-test, prepare]
     uses: ./.github/workflows/reusable-docker.yml
